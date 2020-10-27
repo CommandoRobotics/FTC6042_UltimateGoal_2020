@@ -11,9 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class GyroscopeApi {
     private BNO055IMU imu;
     private float xAngle, yAngle, zAngle;
-    float xAngleReset;
-    float yAngleReset;
-    float zAngleReset;
 
 
     public GyroscopeApi(HardwareMap hardwareMap) {
@@ -69,27 +66,27 @@ public class GyroscopeApi {
         return targetAngle;
     }
 
-    public void resetX(){
-        xAngleReset = xAngle;
+    public float getRawX() {
+        return xAngle;
     }
 
-    public void resetY(){
-        yAngleReset = yAngle;
+    public float getRawY() {
+        return yAngle;
     }
 
-    public void resetZ(){
-        zAngleReset = zAngle;
+    public float getRawZ() {
+        return zAngle;
     }
 
-    public float getX() {
-        return xAngle-xAngleReset;
+    public float getStandardizedX() {
+        return xAngle%360;
     }
 
-    public float getY() {
-        return yAngle-yAngleReset;
+    public float getStandardizedY() {
+        return  yAngle%360;
     }
 
-    public float getZ() {
-        return zAngle-zAngleReset;
+    public float getStandardizedZ() {
+        return xAngle%360;
     }
 }

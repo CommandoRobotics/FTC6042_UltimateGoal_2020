@@ -32,7 +32,7 @@ public class RpmControlTest extends LinearOpMode {
 
             motor.setPower(0.2);
 
-            double currentRpm = motorControlApi.getRpm(motor.getCurrentPosition(), telemetry);
+            double currentRpm = motorControlApi.getRpm(motor.getCurrentPosition());
 
             telemetry.addLine("Current RPM: " + currentRpm);
             telemetry.addLine("Current Tick Count: " + motor.getCurrentPosition());

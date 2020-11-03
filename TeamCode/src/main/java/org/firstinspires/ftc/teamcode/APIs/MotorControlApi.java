@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.APIs;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 public class MotorControlApi {
 
     PidApi pid;
 
-    double previousTimeInMillis;
-    double previousTickCount;
+    double rpmLoopPreviousTimeInMillis;
+    double rpmLoopPreviousTickCount;
     double encoderTicksPerMotorRevolution;
     double previousRpm;
-    double millisToWait = 500;
+    double rpmLoopMillisToWait = 500;
 
     private boolean hasRpmBeenInitialized = false;
 
@@ -51,7 +49,7 @@ public class MotorControlApi {
      */
     public MotorControlApi(double pGain, double iGain, double dGain, double encoderTicksPerMotorRevolution, double millisToWait) {
 
-        this.millisToWait = millisToWait;
+        this.rpmLoopMillisToWait = millisToWait;
         this.encoderTicksPerMotorRevolution = encoderTicksPerMotorRevolution;
 
         pid = new PidApi(pGain, iGain, dGain);
@@ -78,8 +76,8 @@ public class MotorControlApi {
     public void initializeRpmCounter(double currentTickCount) {
 
         previousRpm = 0;
-        previousTimeInMillis = System.currentTimeMillis();
-        previousTickCount = currentTickCount;
+        rpmLoopPreviousTimeInMillis = System.currentTimeMillis();
+        rpmLoopPreviousTickCount = currentTickCount;
         hasRpmBeenInitialized = true;
 
     }
@@ -97,9 +95,9 @@ public class MotorControlApi {
 
         double currentTimeInMillis = System.currentTimeMillis();
 
-        if(currentTimeInMillis >= previousTimeInMillis+millisToWait) {
+        if(currentTimeInMillis >= rpmLoopPreviousTimeInMillis + rpmLoopMillisToWait) {
 
-            double previousRotation = previousTickCount/encoderTicksPerMotorRevolution;
+            double previousRotation = rpmLoopPreviousTickCount /encoderTicksPerMotorRevolution;
             double currentRotation = currentTickCount/encoderTicksPerMotorRevolution;
             double changeInRotation = 0;
 
@@ -109,15 +107,15 @@ public class MotorControlApi {
                 changeInRotation = currentRotation-previousRotation;
             }
 
-            double changeInTimeInSeconds = (currentTimeInMillis-previousTimeInMillis)/1000;
+            double changeInTimeInSeconds = (currentTimeInMillis- rpmLoopPreviousTimeInMillis)/1000;
 
             double rotationsPerMinute = (changeInRotation*60)/changeInTimeInSeconds;
 
             previousRpm = rotationsPerMinute;
 
-            previousTimeInMillis = currentTimeInMillis;
+            rpmLoopPreviousTimeInMillis = currentTimeInMillis;
 
-            previousTickCount = currentTickCount;
+            rpmLoopPreviousTickCount = currentTickCount;
 
             return rotationsPerMinute;
 
@@ -132,7 +130,7 @@ public class MotorControlApi {
      */
     public void resetTicks() {
 
-        previousTickCount = 0;
+        rpmLoopPreviousTickCount = 0;
 
     }
 

@@ -75,7 +75,7 @@ public class PidApi {
      * Update the P gain
      * @param newPGain The new P gain
      */
-    public void updatePGain(double newPGain) {
+    public void setPGain(double newPGain) {
 
         pGain = newPGain;
 
@@ -85,7 +85,7 @@ public class PidApi {
      * Update the I gain
      * @param newIGain The new I gain
      */
-    public void updateIGain(double newIGain) {
+    public void setIGain(double newIGain) {
 
         iGain = newIGain;
 
@@ -95,7 +95,7 @@ public class PidApi {
      * Update the D gain
      * @param newDGain The new D gain
      */
-    public void updateDGain(double newDGain) {
+    public void setDGain(double newDGain) {
 
         dGain = newDGain;
 

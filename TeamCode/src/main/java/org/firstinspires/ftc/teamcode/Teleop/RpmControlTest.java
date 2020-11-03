@@ -16,26 +16,36 @@ public class RpmControlTest extends LinearOpMode {
 
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        MotorControlApi motorControlApi = new MotorControlApi(0, 0, 0, 28, 500);
-
-        double previousTimeInMillis = 0;
-        double previousEncoderValue = 0;
+        MotorControlApi motorControlApi = new MotorControlApi(0.5, 0, 0.5, 28, 500);
 
         telemetry.addLine("Version 5");
         telemetry.update();
 
         waitForStart();
 
+        double currentPower = 0.3;
+
         motorControlApi.initializeRpmCounter(0);
 
         while(opModeIsActive()) {
 
-            motor.setPower(0.2);
+            //motor.setPower(motorControlApi.getNewMotorSpeed(motorControlApi.getRpm(motor.getCurrentPosition()), 2000, motor.getPower()));
+
+            double error = 3000-motorControlApi.getRpm(motor.getCurrentPosition());
+
+            if(motor.getPower() >= 0) {
+                motor.setPower(currentPower + (error * 0.0000005));
+            } else if (motor.getPower() < 0) {
+                motor.setPower(-(currentPower + (error * 0.0000005)));
+            }
+
+            currentPower = motor.getPower();
 
             double currentRpm = motorControlApi.getRpm(motor.getCurrentPosition());
 
             telemetry.addLine("Current RPM: " + currentRpm);
             telemetry.addLine("Current Tick Count: " + motor.getCurrentPosition());
+            telemetry.addLine("Current set power: " + motor.getPower());
             telemetry.update();
 
         }

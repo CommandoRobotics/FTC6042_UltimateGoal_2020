@@ -6,7 +6,7 @@ public class MotorControlApi {
 
     PidApi pid;
 
-    double previousRunTimeInMillis;
+    double previousTimeInMillis;
     double previousTickCount;
     double encoderTicksPerMotorRevolution;
     double previousRpm;
@@ -44,7 +44,7 @@ public class MotorControlApi {
     public void initializeRpmCounter(double currentTickCount) {
 
         previousRpm = 0;
-        previousRunTimeInMillis = System.currentTimeMillis();
+        previousTimeInMillis = System.currentTimeMillis();
         previousTickCount = currentTickCount;
 
     }
@@ -54,35 +54,29 @@ public class MotorControlApi {
 
         double currentTimeInMillis = System.currentTimeMillis();
 
-        if(currentTimeInMillis >= previousTickCount+millisToWait) {
+        if(currentTimeInMillis >= previousTimeInMillis+millisToWait) {
 
-            double changeInTicks;
-            double changeInTimeInSeconds = (currentTimeInMillis-previousRunTimeInMillis)/1000;
+            double previousRotation = previousTickCount/28;
+            double currentRotation = currentTickCount/28;
+            double changeInRotation = 0;
 
-            if(previousTickCount > currentTickCount) {
-
-                changeInTicks = previousTickCount-currentTickCount;
-
-            } else if(currentTickCount > previousTickCount) {
-
-                changeInTicks = currentTickCount-previousTickCount;
-
-            } else {
-                // This means that they're the same, so the RPM is 0
-                return 0;
+            if(previousRotation > currentRotation) {
+                changeInRotation = previousRotation-currentRotation;
+            } else if(currentRotation > previousRotation) {
+                changeInRotation = currentRotation-previousRotation;
             }
 
-            double changeInRotation = changeInTicks/28;
+            double changeInTimeInSeconds = (currentTimeInMillis-previousTimeInMillis)/1000;
 
-            telemetry.addLine("Change in rotation: " + changeInRotation);
+            double rotationsPerMinute = (changeInRotation*60)/changeInTimeInSeconds;
 
-            double changeInRotationPerMinute = (changeInTicks*60)/changeInTimeInSeconds;
+            previousRpm = rotationsPerMinute;
 
-            previousRpm = changeInRotationPerMinute;
+            previousTimeInMillis = currentTimeInMillis;
+
             previousTickCount = currentTickCount;
-            previousRunTimeInMillis = currentTimeInMillis;
 
-            return changeInRotationPerMinute;
+            return rotationsPerMinute;
 
         } else {
             return previousRpm;

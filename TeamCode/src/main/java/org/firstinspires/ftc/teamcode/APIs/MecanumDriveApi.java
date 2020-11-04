@@ -99,6 +99,13 @@ public class MecanumDriveApi {
         rearRight.setPower(power);
     }
 
+    public void strafe(double power) {
+        frontLeft.setPower(-power);
+        frontRight.setPower(power);
+        rearLeft.setPower(power);
+        rearRight.setPower(-power);
+    }
+
     private void normalizeWheelSpeeds(double[] wheelSpeeds) {
 
         double maxMagnitude = Math.abs(wheelSpeeds[0]);

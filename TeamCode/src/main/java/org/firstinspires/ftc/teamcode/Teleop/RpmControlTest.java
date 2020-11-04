@@ -16,7 +16,7 @@ public class RpmControlTest extends LinearOpMode {
 
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        MotorControlApi motorControlApi = new MotorControlApi(0.5, 0, 0.5, 28, 500);
+        MotorControlApi motorControlApi = new MotorControlApi(motor, 28);
 
         telemetry.addLine("Version 5");
         telemetry.update();

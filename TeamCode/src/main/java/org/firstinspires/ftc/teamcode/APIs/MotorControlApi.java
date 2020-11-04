@@ -1,72 +1,26 @@
 package org.firstinspires.ftc.teamcode.APIs;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 public class MotorControlApi {
 
     PidApi pid;
+    double encoderTicksPerMotorRevolution;
+    DcMotor motor;
 
     double rpmLoopPreviousTimeInMillis;
     double rpmLoopPreviousTickCount;
-    double encoderTicksPerMotorRevolution;
     double previousRpm;
     double rpmLoopMillisToWait = 500;
 
     private boolean hasRpmBeenInitialized = false;
 
-    /**
-     * Instantiates a new MotorControlApi
-     * @param pGain
-     * @param iGain
-     * @param dGain
-     */
-    public MotorControlApi(double pGain, double iGain, double dGain) {
-
-        pid = new PidApi(pGain, iGain, dGain);
-
+    public MotorControlApi(DcMotor motor, double encoderTicksPerMotorRevolution){
+        this.motor = motor;
     }
 
-    /**
-     * Instantiates a new MotorControlApi
-     * @param pGain
-     * @param iGain
-     * @param dGain
-     * @param encoderTicksPerMotorRevolution
-     */
-    public MotorControlApi(double pGain, double iGain, double dGain, double encoderTicksPerMotorRevolution) {
-
-        this.encoderTicksPerMotorRevolution = encoderTicksPerMotorRevolution;
-
-        pid = new PidApi(pGain, iGain, dGain);
-
-    }
-
-    /**
-     * Instantiates a new MotorControlApi
-     * @param pGain
-     * @param iGain
-     * @param dGain
-     * @param encoderTicksPerMotorRevolution
-     * @param millisToWait
-     */
-    public MotorControlApi(double pGain, double iGain, double dGain, double encoderTicksPerMotorRevolution, double millisToWait) {
-
-        this.rpmLoopMillisToWait = millisToWait;
-        this.encoderTicksPerMotorRevolution = encoderTicksPerMotorRevolution;
-
-        pid = new PidApi(pGain, iGain, dGain);
-
-    }
-
-    /**
-     * Gets the new motor speed based on a PID formula
-     * @param currentRpm
-     * @param targetRpm
-     * @param currentMotorSpeed
-     * @return
-     */
-    public double getNewMotorSpeed(double currentRpm, double targetRpm, double currentMotorSpeed) {
-
-        return currentMotorSpeed + pid.getOutput(currentRpm, targetRpm);
-
+    public double getInchesTraveled(double diameterOfWheelInInches) {
+        return (motor.getCurrentPosition()/encoderTicksPerMotorRevolution)*diameterOfWheelInInches;
     }
 
     /**

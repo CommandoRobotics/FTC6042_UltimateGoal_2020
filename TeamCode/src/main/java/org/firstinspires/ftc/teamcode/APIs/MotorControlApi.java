@@ -8,6 +8,7 @@ public class MotorControlApi {
     double encoderTicksPerMotorRevolution;
     DcMotor motor;
 
+    // These variables are for the RPM calculating method
     double rpmLoopPreviousTimeInMillis;
     double rpmLoopPreviousTickCount;
     double previousRpm;
@@ -15,10 +16,20 @@ public class MotorControlApi {
 
     private boolean hasRpmBeenInitialized = false;
 
+    /**
+     * Instantiate a new MotorControlAPI object
+     * @param motor The motor this API is controlling
+     * @param encoderTicksPerMotorRevolution The amount of encoder counts per revolution (including gearing)
+     */
     public MotorControlApi(DcMotor motor, double encoderTicksPerMotorRevolution){
         this.motor = motor;
     }
 
+    /**
+     * Gets the inches traveled since the last encoder reset
+     * @param diameterOfWheelInInches The diameter of the output wheel
+     * @return The distance the wheel has traveled in inches
+     */
     public double getInchesTraveled(double diameterOfWheelInInches) {
         return (motor.getCurrentPosition()/encoderTicksPerMotorRevolution)*diameterOfWheelInInches;
     }
@@ -28,12 +39,10 @@ public class MotorControlApi {
      * @param currentTickCount
      */
     public void initializeRpmCounter(double currentTickCount) {
-
         previousRpm = 0;
         rpmLoopPreviousTimeInMillis = System.currentTimeMillis();
         rpmLoopPreviousTickCount = currentTickCount;
         hasRpmBeenInitialized = true;
-
     }
 
     /**

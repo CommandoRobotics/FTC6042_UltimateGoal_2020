@@ -23,6 +23,7 @@ public class MotorControlApi {
      */
     public MotorControlApi(DcMotor motor, double encoderTicksPerMotorRevolution){
         this.motor = motor;
+        this.encoderTicksPerMotorRevolution = encoderTicksPerMotorRevolution;
     }
 
     /**
@@ -32,6 +33,11 @@ public class MotorControlApi {
      */
     public double getInchesTraveled(double diameterOfWheelInInches) {
         return (motor.getCurrentPosition()/encoderTicksPerMotorRevolution)*diameterOfWheelInInches;
+    }
+
+    public void resetEncoder() {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**

@@ -95,11 +95,46 @@ public class MotorControlApi {
     }
 
     /**
-     * Reset the amount of ticks counted to -0
+     * Gets the current RPM of the motor but assumes the current position of the motor is the position to use
+     * @return
      */
-    public void resetTicks() {
+    public double getRpm() {
 
-        rpmLoopPreviousTickCount = 0;
+        double currentTickCount = motor.getCurrentPosition();
+
+        if(!hasRpmBeenInitialized) {
+            return 0;
+        }
+
+        double currentTimeInMillis = System.currentTimeMillis();
+
+        if(currentTimeInMillis >= rpmLoopPreviousTimeInMillis + rpmLoopMillisToWait) {
+
+            double previousRotation = rpmLoopPreviousTickCount /encoderTicksPerMotorRevolution;
+            double currentRotation = currentTickCount/encoderTicksPerMotorRevolution;
+            double changeInRotation = 0;
+
+            if(previousRotation > currentRotation) {
+                changeInRotation = previousRotation-currentRotation;
+            } else if(currentRotation > previousRotation) {
+                changeInRotation = currentRotation-previousRotation;
+            }
+
+            double changeInTimeInSeconds = (currentTimeInMillis- rpmLoopPreviousTimeInMillis)/1000;
+
+            double rotationsPerMinute = (changeInRotation*60)/changeInTimeInSeconds;
+
+            previousRpm = rotationsPerMinute;
+
+            rpmLoopPreviousTimeInMillis = currentTimeInMillis;
+
+            rpmLoopPreviousTickCount = currentTickCount;
+
+            return rotationsPerMinute;
+
+        } else {
+            return previousRpm;
+        }
 
     }
 

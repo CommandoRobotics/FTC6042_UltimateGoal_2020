@@ -15,6 +15,9 @@ public class MecanumDriveApi {
 
     double wheelSpeeds[] = new double[4];
 
+    double ticksPerWheelRevolution;
+    double wheelCircumferenceInInches;
+
     /**
      * This creates a new Mecanum API object which can be used to calculate values or drive the robot
      * @param frontLeft The front left motor object
@@ -22,24 +25,28 @@ public class MecanumDriveApi {
      * @param rearLeft The rear left motor object
      * @param rearRight The rear right motor object
      */
-    public MecanumDriveApi(DcMotor frontLeft, DcMotor frontRight, DcMotor rearLeft, DcMotor rearRight) {
+    public MecanumDriveApi(DcMotor frontLeft, DcMotor frontRight, DcMotor rearLeft, DcMotor rearRight, double ticksPerWheelRevolution, double wheelDiameterInInches) {
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.rearLeft = rearLeft;
         this.rearRight = rearRight;
+        this.ticksPerWheelRevolution = ticksPerWheelRevolution;
+        wheelCircumferenceInInches = Math.PI*wheelDiameterInInches;
     }
 
     /**
      * This creates a new Mecanum API object which can be used to calculate values or drive the robot
      * @param hardwareMap The robot's hardware map
+     * @param ticksPerWheelRevolution The amount of encoder ticks per one revolution of the wheel (this needs to take into account all gearing)
+     * @param wheelDiameterInInches The diameter of the wheel in inches
      */
-    public MecanumDriveApi(HardwareMap hardwareMap) {
-
+    public MecanumDriveApi(HardwareMap hardwareMap, double ticksPerWheelRevolution, double wheelDiameterInInches) {
         frontLeft = hardwareMap.get(DcMotor.class, frontLeftMotorNameInHardwareMap);
         frontRight = hardwareMap.get(DcMotor.class, frontRightMotorNameInHardwareMap);
         rearLeft = hardwareMap.get(DcMotor.class, rearLeftMotorNameInHardwareMap);
         rearRight = hardwareMap.get(DcMotor.class, rearRightMotorNameInHardwareMap);
-
+        this.ticksPerWheelRevolution = ticksPerWheelRevolution;
+        wheelCircumferenceInInches = Math.PI*wheelDiameterInInches;
     }
 
     /**
@@ -90,13 +97,126 @@ public class MecanumDriveApi {
 
     /**
      * Drive the robot forward at the speed specified
-     * @param power
+     * @param power The power to move forward
      */
     public void driveForward(double power) {
         frontLeft.setPower(power);
         frontRight.setPower(power);
         rearLeft.setPower(power);
         rearRight.setPower(power);
+    }
+
+    /**
+     * Drives forward the specified distance using PID
+     * @param distanceToTravelInInches The distance to travel in inches
+     * @param p The P value
+     * @param i The I value
+     * @param d The D value
+     * @return Returns true when the target has been reached
+     */
+    public boolean driveForwardPid(double distanceToTravelInInches, double p, double i, double d) {
+
+        PidApi pid = new PidApi(p, i, d);
+
+        resetEncoders();
+
+        double averageDistanceTraveledInTicks = 0;
+        double distanceToTravelInTicks = inchesToTicks(distanceToTravelInInches);
+
+        while(averageDistanceTraveledInTicks != distanceToTravelInInches) {
+
+            averageDistanceTraveledInTicks = (frontLeft.getCurrentPosition()+frontRight.getCurrentPosition()+rearLeft.getCurrentPosition()+rearRight.getCurrentPosition())/4;
+
+            double power = pid.getOutput(averageDistanceTraveledInTicks, distanceToTravelInTicks);
+
+            driveForward(power);
+
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Strafe at the power specified
+     * @param power The power to strafe
+     */
+    public void strafe(double power) {
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        rearLeft.setPower(-power);
+        rearRight.setPower(power);
+    }
+
+    public boolean strafePid(double distanceToTravelInInches, double p, double i, double d) {
+
+        boolean areWeTravelingRight;
+
+        if(distanceToTravelInInches > 0) {
+            areWeTravelingRight = true;
+        } else if(distanceToTravelInInches < 0) {
+            areWeTravelingRight = false;
+        } else {
+            return true;
+        }
+
+        PidApi pid = new PidApi(p, i, d);
+
+        resetEncoders();
+
+        double averageDistanceTraveled = 0;
+
+        while(averageDistanceTraveled != distanceToTravelInInches) {
+
+            averageDistanceTraveled = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
+            double distanceToTravelInTicks = inchesToTicks(distanceToTravelInInches);
+
+            // If we're moving left so the distance traveled needs to be a negative number
+            if(!areWeTravelingRight) {
+                averageDistanceTraveled = -averageDistanceTraveled;
+            }
+
+            double power = pid.getOutput(averageDistanceTraveled, distanceToTravelInTicks);
+
+            strafe(power);
+
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Reset all of the drive motor encoders
+     */
+    public void resetEncoders() {
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    /**
+     * Changes inches to ticks
+     * @param inches The amount of inches
+     * @return That amount of inches in ticks
+     */
+    private double inchesToTicks(double inches) {
+        return (inches/wheelCircumferenceInInches)*ticksPerWheelRevolution;
+    }
+
+    /**
+     * Change ticks to inches
+     * @param ticks The amount of ticks
+     * @return That amount of ticks as inches
+     */
+    private double ticksToInches(double ticks) {
+        return (ticks/ticksPerWheelRevolution)*wheelCircumferenceInInches;
     }
 
     private void normalizeWheelSpeeds(double[] wheelSpeeds) {

@@ -81,6 +81,7 @@ public class GrabberApi {
      */
     public double getClawPosition() {
         return clawMotor.getPosition();
+        //TODO add some logic to this API that allows for entering encoder ticks per rotation and returning rotations rather than total encoder ticks
     }
 
     /**

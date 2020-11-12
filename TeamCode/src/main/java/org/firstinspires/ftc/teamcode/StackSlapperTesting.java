@@ -11,10 +11,10 @@ public class StackSlapperTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         Servo servo = hardwareMap.get(Servo.class, "servo");
-        TouchSensor ts1 = hardwareMap.get(TouchSensor.class, "ts1");
-        TouchSensor ts2 = hardwareMap.get(TouchSensor.class, "ts2");
-        TouchSensor ts3 = hardwareMap.get(TouchSensor.class, "ts3");
-        TouchSensor ts4 = hardwareMap.get(TouchSensor.class, "ts4");
+//        TouchSensor ts1 = hardwareMap.get(TouchSensor.class, "ts1");
+//        TouchSensor ts2 = hardwareMap.get(TouchSensor.class, "ts2");
+//        TouchSensor ts3 = hardwareMap.get(TouchSensor.class, "ts3");
+//        TouchSensor ts4 = hardwareMap.get(TouchSensor.class, "ts4");
 
 
         waitForStart();
@@ -23,13 +23,13 @@ public class StackSlapperTesting extends LinearOpMode {
         while(opModeIsActive()) {
             servo.setPosition(-180);
 
-            if(ts1.isPressed() || ts2.isPressed() || ts3.isPressed() || ts4.isPressed()) {
-                telemetry.addLine("Ring Detected");
-                telemetry.update();
-            } else {
-                telemetry.addLine("No ring detected");
-                telemetry.update();
-            }
+//            if(ts1.isPressed() || ts2.isPressed() || ts3.isPressed() || ts4.isPressed()) {
+//                telemetry.addLine("Ring Detected");
+//                telemetry.update();
+//            } else {
+//                telemetry.addLine("No ring detected");
+//                telemetry.update();
+//            }
 
         }
 

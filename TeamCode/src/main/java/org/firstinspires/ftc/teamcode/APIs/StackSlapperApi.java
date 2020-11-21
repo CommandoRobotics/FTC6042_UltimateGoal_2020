@@ -11,6 +11,8 @@ public class StackSlapperApi {
 
     String stackSlapperMotorNameInHardwareMap = "stackSlapper";
 
+    double encoderTicksPerRotation = 28;
+
     /**
      * Instantiate a new stack slapper API object
      * @param hardwareMap The robot's hardware map
@@ -18,6 +20,17 @@ public class StackSlapperApi {
     public StackSlapperApi(HardwareMap hardwareMap) {
         stackSlapperMotor = hardwareMap.get(DcMotor.class, stackSlapperMotorNameInHardwareMap);
         stackSlapperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    /**
+     * Instantiate a new stack slapper API object
+     * @param hardwareMap The robot's hardware map
+     * @param encoderTicksPerRotation The amount of encoder ticks per motor revolution
+     */
+    public StackSlapperApi(HardwareMap hardwareMap, double encoderTicksPerRotation) {
+        stackSlapperMotor = hardwareMap.get(DcMotor.class, stackSlapperMotorNameInHardwareMap);
+        stackSlapperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.encoderTicksPerRotation = encoderTicksPerRotation;
     }
 
     /**
@@ -54,11 +67,10 @@ public class StackSlapperApi {
 
     /**
      * Gets the current position of the stack slapper motor
-     * @return The current position in ticks
+     * @return The current position in rotations
      */
     public double getCurrentPosition() {
-        return stackSlapperMotor.getCurrentPosition();
-        //TODO add some logic to this API that allows for entering encoder ticks per rotation and returning rotations rather than total encoder ticks
+        return stackSlapperMotor.getCurrentPosition()/encoderTicksPerRotation;
     }
 
 }

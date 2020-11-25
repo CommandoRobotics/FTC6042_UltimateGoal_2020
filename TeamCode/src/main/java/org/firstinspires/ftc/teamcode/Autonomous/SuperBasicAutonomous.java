@@ -16,7 +16,7 @@ public class SuperBasicAutonomous extends LinearOpMode {
 
         double startTimeOne = System.currentTimeMillis();
 
-        while(System.currentTimeMillis() < startTimeOne+8000 && opModeIsActive()) {
+        while(System.currentTimeMillis() < startTimeOne+7500 && opModeIsActive()) {
             drive.driveTank(-0.5, -0.5);
         }
 

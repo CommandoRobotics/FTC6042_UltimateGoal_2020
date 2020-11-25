@@ -40,17 +40,17 @@ public class TankDriveApi {
     }
 
     public void driveForward(double power) {
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        rearLeft.setPower(power);
-        rearRight.setPower(power);
+        frontLeft.setPower(0.5*power);
+        frontRight.setPower(0.5*power);
+        rearLeft.setPower(0.5*power);
+        rearRight.setPower(0.5*power);
     }
 
     public void driveTank(double leftPower, double rightPower) {
-        frontLeft.setPower(leftPower);
-        rearLeft.setPower(leftPower);
-        frontRight.setPower(rightPower);
-        rearRight.setPower(rightPower);
+        frontLeft.setPower(0.5*leftPower);
+        rearLeft.setPower(0.5*leftPower);
+        frontRight.setPower(0.5*rightPower);
+        rearRight.setPower(0.5*rightPower);
     }
 
     public void stopMotors() {

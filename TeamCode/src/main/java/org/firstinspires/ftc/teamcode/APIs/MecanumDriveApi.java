@@ -61,10 +61,10 @@ public class MecanumDriveApi {
         y = -y;
         rotation = -rotation;
 
-        wheelSpeeds[0] = y + x + rotation; // Front left
-        wheelSpeeds[1] = -y + x + rotation; // Front right
-        wheelSpeeds[2] = -y + x - rotation; // Rear left
-        wheelSpeeds[3] = y + x - rotation; // Rear right
+        wheelSpeeds[0] = y + x - rotation; // Front left
+        wheelSpeeds[1] = y - x + rotation; // Front right
+        wheelSpeeds[2] = y - x - rotation; // Rear left
+        wheelSpeeds[3] = y + x + rotation; // Rear right
 
         normalizeWheelSpeeds(wheelSpeeds);
     }
@@ -81,10 +81,10 @@ public class MecanumDriveApi {
         y = -y;
         rotation = -rotation;
 
-        wheelSpeeds[0] = y + x + rotation; // Front left
-        wheelSpeeds[1] = -y + x + rotation; // Front right
-        wheelSpeeds[2] = -y + x - rotation; // Rear left
-        wheelSpeeds[3] = y + x - rotation; // Rear right
+        wheelSpeeds[0] = y + x - rotation; // Front left
+        wheelSpeeds[1] = y - x + rotation; // Front right
+        wheelSpeeds[2] = y - x - rotation; // Rear left
+        wheelSpeeds[3] = y + x + rotation; // Rear right
 
         normalizeWheelSpeeds(wheelSpeeds);
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.APIs.MecanumDriveApi;
 import org.firstinspires.ftc.teamcode.APIs.TankDriveApi;
 
 @TeleOp(name="Main Teleop")
+@Disabled
 public class MainTeleop extends LinearOpMode {
 
     @Override

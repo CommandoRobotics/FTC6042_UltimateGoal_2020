@@ -13,14 +13,21 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        TankDriveApi drive = new TankDriveApi(hardwareMap, 0, 0);
+        MecanumDriveApi drive = new MecanumDriveApi(hardwareMap, 1890, 3);
 
         waitForStart();
 
         while(opModeIsActive()) {
 
-            drive.driveTank(gamepad1.left_stick_y, gamepad1.right_stick_y);
+            drive.driveCartesian(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
+            telemetry.addLine(drive.getFrontLeftSpeed() + "(-----)" + drive.getFrontRightSpeed());
+            telemetry.addLine("|       |");
+            telemetry.addLine("|       |");
+            telemetry.addLine("|       |");
+            telemetry.addLine(drive.getRearLeftSpeed() + "(-----)" + drive.getRearRightSpeed());
+            telemetry.addLine("X: " + gamepad1.left_stick_x + " Y: " + gamepad1.left_stick_y + " ROT: " + gamepad1.right_stick_x);
+            telemetry.update();
         }
 
     }

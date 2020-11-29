@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.APIs;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MecanumDriveApi {
@@ -32,6 +33,10 @@ public class MecanumDriveApi {
         this.rearRight = rearRight;
         this.ticksPerWheelRevolution = ticksPerWheelRevolution;
         wheelCircumferenceInInches = Math.PI*wheelDiameterInInches;
+
+        // Set the motors on the right to run in reverse
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /**
@@ -47,6 +52,10 @@ public class MecanumDriveApi {
         rearRight = hardwareMap.get(DcMotor.class, rearRightMotorNameInHardwareMap);
         this.ticksPerWheelRevolution = ticksPerWheelRevolution;
         wheelCircumferenceInInches = Math.PI*wheelDiameterInInches;
+
+        // Set the motors on the right to run in reverse
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /**

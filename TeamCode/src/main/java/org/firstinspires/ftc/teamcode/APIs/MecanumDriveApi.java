@@ -66,13 +66,14 @@ public class MecanumDriveApi {
      */
     public void calculateCartesianValues(double x, double y, double rotation) {
 
-        // Reverse forward value
+        // Reverse the forward and strafe values
         y = -y;
+        x = -x;
 
         wheelSpeeds[0] = y + x + rotation; // Front left
-        wheelSpeeds[1] = y - x + rotation; // Front right
+        wheelSpeeds[1] = y - x - rotation; // Front right
         wheelSpeeds[2] = y - x + rotation; // Rear left
-        wheelSpeeds[3] = y + x + rotation; // Rear right
+        wheelSpeeds[3] = y + x - rotation; // Rear right
 
         normalizeWheelSpeeds(wheelSpeeds);
     }
@@ -85,13 +86,14 @@ public class MecanumDriveApi {
      */
     public void driveCartesian(double x, double y, double rotation) {
 
-        // Reverse the forward value
+        // Reverse the forward and strafe values
         y = -y;
+        x = -x;
 
         wheelSpeeds[0] = y + x + rotation; // Front left
-        wheelSpeeds[1] = y - x + rotation; // Front right
+        wheelSpeeds[1] = y - x - rotation; // Front right
         wheelSpeeds[2] = y - x + rotation; // Rear left
-        wheelSpeeds[3] = y + x + rotation; // Rear right
+        wheelSpeeds[3] = y + x - rotation; // Rear right
 
         normalizeWheelSpeeds(wheelSpeeds);
 

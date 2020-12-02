@@ -14,10 +14,10 @@ public class ServoTesting extends LinearOpMode {
 
         waitForStart();
 
-        while(opModeIsActive()) {
+        boolean previousA = false;
+        boolean previousB = false;
 
-            boolean previousA = false;
-            boolean previousB = false;
+        while(opModeIsActive()) {
 
             if(gamepad1.a && gamepad1.a != previousA){
                 grabberServo.setPosition(90);

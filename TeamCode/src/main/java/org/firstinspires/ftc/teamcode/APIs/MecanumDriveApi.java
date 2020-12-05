@@ -19,6 +19,11 @@ public class MecanumDriveApi {
     double ticksPerWheelRevolution;
     double wheelCircumferenceInInches;
 
+    // Variables used for autonomous actions
+    double targetPosition;
+    boolean isActionRunning = false;
+    double actionP = 0, actionI = 0, actionD = 0;
+
     /**
      * This creates a new Mecanum API object which can be used to calculate values or drive the robot
      * @param frontLeft The front left motor object
@@ -147,6 +152,74 @@ public class MecanumDriveApi {
     }
 
     /**
+     * Begin driving forward with PID
+     * @param distanceToTravelInInches The distance to drive in inches
+     * @param p The P value
+     * @param i The I value
+     * @param d The D value
+     */
+    public void startDriveForwardPid(double distanceToTravelInInches, double p, double i, double d) {
+
+        isActionRunning = true;
+
+        clearActionPids();
+
+        PidApi pid = new PidApi(p, i, d);
+
+        actionP = p;
+        actionI = i;
+        actionD = d;
+
+        resetEncoders();
+
+        targetPosition = inchesToTicks(distanceToTravelInInches);
+
+        double power = pid.getOutput(0, targetPosition);
+
+        driveForward(standardizeMotorPower(power));
+
+    }
+
+    /**
+     * Update the current position of the robot for driving forward
+     */
+    public void updatePositionDriveForward() {
+
+        double currentPosition = (frontLeft.getCurrentPosition() + frontRight.getCurrentPosition() + rearLeft.getCurrentPosition() + rearRight.getCurrentPosition())/4;
+
+        // Stop our action when we arrive at our position
+        if(currentPosition == targetPosition) {
+            isActionRunning = false;
+            driveForward(0);
+            return;
+        }
+
+        PidApi pid = new PidApi(actionP, actionI, actionD);
+
+        double power = pid.getOutput(currentPosition, targetPosition);
+
+        driveForward(standardizeMotorPower(power));
+
+    }
+
+    /**
+     * Get whether there is an action running
+     * @return Whether there is an action running
+     */
+    public boolean isActionRunning() {
+        return isActionRunning;
+    }
+
+    /**
+     * Clear the PID values
+     */
+    public void clearActionPids() {
+        actionP = 0;
+        actionI = 0;
+        actionD = 0;
+    }
+
+    /**
      * Strafe at the power specified
      * @param power The power to strafe
      */
@@ -157,6 +230,14 @@ public class MecanumDriveApi {
         rearRight.setPower(power);
     }
 
+    /**
+     * Strafe using PID
+     * @param distanceToTravelInInches The distance to travel in inches
+     * @param p The P value
+     * @param i The I value
+     * @param d The D value
+     * @return This method returns true when the robot has reached its target
+     */
     public boolean strafePid(double distanceToTravelInInches, double p, double i, double d) {
 
         boolean areWeTravelingRight;
@@ -192,6 +273,60 @@ public class MecanumDriveApi {
         }
 
         return true;
+
+    }
+
+    public void startStrafePid(double distanceToTravelInInches, double p, double i, double d) {
+        isActionRunning = true;
+
+        clearActionPids();
+
+        PidApi pid = new PidApi(p, i, d);
+
+        actionP = p;
+        actionI = i;
+        actionD = d;
+
+        resetEncoders();
+
+        boolean areWeTravelingRight = true;
+
+        if(distanceToTravelInInches > 0) {
+            areWeTravelingRight = true;
+        } else if(distanceToTravelInInches < 0) {
+            areWeTravelingRight = false;
+        }
+
+        double averageDistanceTraveled = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
+        double distanceToTravelInTicks = inchesToTicks(distanceToTravelInInches);
+
+        // If we're moving to the left, the distance traveled needs to be a negative number
+        if(!areWeTravelingRight) {
+            averageDistanceTraveled = -averageDistanceTraveled;
+        }
+
+        double power = pid.getOutput(averageDistanceTraveled, distanceToTravelInTicks);
+
+        strafe(standardizeMotorPower(power));
+
+    }
+
+    public void updatePositionStrafe() {
+
+        double currentPosition = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
+
+        // Stop our action when we arrive at our position
+        if(currentPosition == targetPosition) {
+            isActionRunning = false;
+            driveForward(0);
+            return;
+        }
+
+        PidApi pid = new PidApi(actionP, actionI, actionD);
+
+        double power = pid.getOutput(currentPosition, targetPosition);
+
+        strafe(standardizeMotorPower(power));
 
     }
 
@@ -281,5 +416,22 @@ public class MecanumDriveApi {
     public double getRearRightSpeed() {
         return wheelSpeeds[3];
     }
+
+    /**
+     * Standardizes the motor's power
+     * @param power The power to standardize
+     * @return
+     */
+    public double standardizeMotorPower(double power) {
+        if (power > 1) {
+            return 1;
+        } else if(power < -1) {
+            return -1;
+        } else {
+            return power;
+        }
+    }
+
+
 
 }

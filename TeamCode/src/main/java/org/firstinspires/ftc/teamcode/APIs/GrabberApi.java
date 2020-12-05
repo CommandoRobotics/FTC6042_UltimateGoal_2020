@@ -9,8 +9,8 @@ public class GrabberApi {
     DcMotor grabberMotor;
     Servo clawServo;
 
-    String grabberMotorNameInHardwareMap = "grabberMotor";
-    String clawServoNameInHardwareMap = "clawMotor";
+    String grabberMotorNameInHardwareMap = "grabber";
+    String clawServoNameInHardwareMap = "claw";
 
     boolean shouldCurrentProcessBeCancelled = false;
 

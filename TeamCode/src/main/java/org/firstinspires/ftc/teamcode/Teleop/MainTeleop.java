@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.APIs.GrabberApi;
 import org.firstinspires.ftc.teamcode.APIs.MecanumDriveApi;
 import org.firstinspires.ftc.teamcode.APIs.TankDriveApi;
 
-@TeleOp(name="Main Teleop V2.4")
+@TeleOp(name="Main Teleop V2.4.6")
 public class MainTeleop extends LinearOpMode {
 
     @Override
@@ -33,7 +33,7 @@ public class MainTeleop extends LinearOpMode {
             drive.driveCartesian(0.5*gamepad1.left_stick_x, 0.5*gamepad1.left_stick_y, 0.5*gamepad1.right_stick_x);
 
             // Set the power of the grabber
-            grabber.setGrabberPower(gamepad1.right_trigger-gamepad1.left_trigger);
+            grabber.setGrabberPower(0.1*(gamepad1.right_trigger-gamepad1.left_trigger));
 
             // Do some logic for A being pressed and toggling the position of the claw
             if(gamepad1.a && previousA == false) {

@@ -4,9 +4,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class MecanumDriveApi {
+public class ChassisApi {
 
+    // Chassis components
     DcMotor frontLeft, frontRight, rearLeft, rearRight;
+    GyroscopeApi gyro;
 
     // The names of the motors in the hardware map
     String frontLeftMotorNameInHardwareMap = "frontLeft";
@@ -26,31 +28,11 @@ public class MecanumDriveApi {
 
     /**
      * This creates a new Mecanum API object which can be used to calculate values or drive the robot
-     * @param frontLeft The front left motor object
-     * @param frontRight The front right motor object
-     * @param rearLeft The rear left motor object
-     * @param rearRight The rear right motor object
-     */
-    public MecanumDriveApi(DcMotor frontLeft, DcMotor frontRight, DcMotor rearLeft, DcMotor rearRight, double ticksPerWheelRevolution, double wheelDiameterInInches) {
-        this.frontLeft = frontLeft;
-        this.frontRight = frontRight;
-        this.rearLeft = rearLeft;
-        this.rearRight = rearRight;
-        this.ticksPerWheelRevolution = ticksPerWheelRevolution;
-        wheelCircumferenceInInches = Math.PI*wheelDiameterInInches;
-
-        // Set the motors on the right to run in reverse
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
-    }
-
-    /**
-     * This creates a new Mecanum API object which can be used to calculate values or drive the robot
      * @param hardwareMap The robot's hardware map
      * @param ticksPerWheelRevolution The amount of encoder ticks per one revolution of the wheel (this needs to take into account all gearing)
      * @param wheelDiameterInInches The diameter of the wheel in inches
      */
-    public MecanumDriveApi(HardwareMap hardwareMap, double ticksPerWheelRevolution, double wheelDiameterInInches) {
+    public ChassisApi(HardwareMap hardwareMap, double ticksPerWheelRevolution, double wheelDiameterInInches) {
         frontLeft = hardwareMap.get(DcMotor.class, frontLeftMotorNameInHardwareMap);
         frontRight = hardwareMap.get(DcMotor.class, frontRightMotorNameInHardwareMap);
         rearLeft = hardwareMap.get(DcMotor.class, rearLeftMotorNameInHardwareMap);
@@ -276,6 +258,13 @@ public class MecanumDriveApi {
 
     }
 
+    /**
+     * Begin the strafe action with PID
+     * @param distanceToTravelInInches The distance to strafe in inches. Negative is left, positive is right.
+     * @param p The P value to use in the PID loop
+     * @param i The I value to use in the PID loop
+     * @param d The D value to use in the PID loop
+     */
     public void startStrafePid(double distanceToTravelInInches, double p, double i, double d) {
         isActionRunning = true;
 
@@ -311,6 +300,9 @@ public class MecanumDriveApi {
 
     }
 
+    /**
+     * Update the strafing position for the strafe with PID action
+     */
     public void updatePositionStrafe() {
 
         double currentPosition = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
@@ -363,6 +355,10 @@ public class MecanumDriveApi {
         return (ticks/ticksPerWheelRevolution)*wheelCircumferenceInInches;
     }
 
+    /**
+     * Normalize the wheel speeds by making the minimum and maximum 0
+     * @param wheelSpeeds The normalized wheel speeds
+     */
     private void normalizeWheelSpeeds(double[] wheelSpeeds) {
 
         double maxMagnitude = Math.abs(wheelSpeeds[0]);
@@ -432,6 +428,22 @@ public class MecanumDriveApi {
         }
     }
 
+    /**
+     * Gets the heading of the robot and normalizes it (E.G. 720 will be changed to 0)
+     * @return The robots current heading
+     */
+    public double getHeading() {
+        //TODO change this to the proper axis
+        return gyro.getStandardizedX();
+    }
 
+    /**
+     * Gets the heading of the robot without normalizing it (E.G. 720 won't be changed to 0)
+     * @return The robots current heading
+     */
+    public double getRawHeading() {
+        //TODO change this to the proper axis
+        return gyro.getRawX();
+    }
 
 }

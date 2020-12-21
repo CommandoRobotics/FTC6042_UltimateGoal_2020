@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.APIs.TankDriveApi;
 
-@Autonomous(name = "Only drive to line | V1.1")
+@Autonomous(name = "Only drive to line | V1.2")
 public class NavigateToLineOnly extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

@@ -48,6 +48,7 @@ public class GrabberApi {
         grabberMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    //TODO fix this grabber code because we know this won't work, since it didn't with the drive train. We'll get stuck in a while loop.
     /**
      * Runs the grabber motor to the specified position using PID
      * @param positionInTicks The position to move to in ticks

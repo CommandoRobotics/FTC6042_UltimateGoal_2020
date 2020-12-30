@@ -4,17 +4,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Constants.Constants;
+
 public class ChassisApi {
 
     // Chassis components
     DcMotor frontLeft, frontRight, rearLeft, rearRight;
     GyroscopeApi gyro;
-
-    // The names of the motors in the hardware map
-    String frontLeftMotorNameInHardwareMap = "frontLeft";
-    String frontRightMotorNameInHardwareMap = "frontRight";
-    String rearLeftMotorNameInHardwareMap = "rearLeft";
-    String rearRightMotorNameInHardwareMap = "rearRight";
+    StackSlapperApi stackSlapper;
+    GrabberApi grabber;
 
     double wheelSpeeds[] = new double[4];
 
@@ -29,16 +27,14 @@ public class ChassisApi {
     /**
      * This creates a new Mecanum API object which can be used to calculate values or drive the robot
      * @param hardwareMap The robot's hardware map
-     * @param ticksPerWheelRevolution The amount of encoder ticks per one revolution of the wheel (this needs to take into account all gearing)
-     * @param wheelDiameterInInches The diameter of the wheel in inches
      */
-    public ChassisApi(HardwareMap hardwareMap, double ticksPerWheelRevolution, double wheelDiameterInInches) {
-        frontLeft = hardwareMap.get(DcMotor.class, frontLeftMotorNameInHardwareMap);
-        frontRight = hardwareMap.get(DcMotor.class, frontRightMotorNameInHardwareMap);
-        rearLeft = hardwareMap.get(DcMotor.class, rearLeftMotorNameInHardwareMap);
-        rearRight = hardwareMap.get(DcMotor.class, rearRightMotorNameInHardwareMap);
-        this.ticksPerWheelRevolution = ticksPerWheelRevolution;
-        wheelCircumferenceInInches = Math.PI*wheelDiameterInInches;
+    public ChassisApi(HardwareMap hardwareMap) {
+        frontLeft = hardwareMap.get(DcMotor.class, Constants.FRONT_LEFT_MOTOR_NAME_IN_HARDWARE_MAP);
+        frontRight = hardwareMap.get(DcMotor.class, Constants.FRONT_RIGHT_MOTOR_NAME_IN_HARDWARE_MAP);
+        rearLeft = hardwareMap.get(DcMotor.class, Constants.REAR_LEFT_MOTOR_NAME_IN_HARDWARE_MAP);
+        rearRight = hardwareMap.get(DcMotor.class, Constants.REAR_RIGHT_MOTOR_NAME_IN_HARDWARE_MAP);
+        ticksPerWheelRevolution = Constants.ENCODER_TICKS_PER_DRIVE_WHEEL_REVOLUTION;
+        wheelCircumferenceInInches = Math.PI*Constants.DRIVE_WHEEL_DIAMETER_IN_INCHES;
 
         // Set the motors on the right to run in reverse
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -49,6 +45,11 @@ public class ChassisApi {
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Instantiate our robot's other APIs
+        gyro = new GyroscopeApi(hardwareMap);
+        stackSlapper = new StackSlapperApi(hardwareMap);
+        grabber = new GrabberApi(hardwareMap);
     }
 
     /**
@@ -439,7 +440,7 @@ public class ChassisApi {
      * @return The robots current heading
      */
     public double getHeading() {
-        //TODO change this to the proper axis
+        //TODO change this to the proper gyro axis
         return gyro.getStandardizedX();
     }
 
@@ -448,8 +449,70 @@ public class ChassisApi {
      * @return The robots current heading
      */
     public double getRawHeading() {
-        //TODO change this to the proper axis
+        //TODO change this to the proper gyro axis
         return gyro.getRawX();
+    }
+
+    /**
+     * Close the grabber's claw
+     */
+    public void closeClaw() {
+        grabber.setClawPosition(Constants.CLAW_CLOSED_POSITION);
+    }
+
+    /**
+     * Open the grabber's claw
+     */
+    public void openClaw() {
+        grabber.setClawPosition(Constants.CLAW_OPEN_POSITION);
+    }
+
+    /**
+     * Set the claw to a certain position
+     * @param position The new position as a value between 0 and 1
+     */
+    public void setClawPosition(double position) {
+        grabber.setClawPosition(position);
+    }
+
+    /**
+     * Gets the grabber claw's current position
+     * @return A value between 0 and 1 that represents the claw's position
+     */
+    public double getClawPosition() {
+        return grabber.getClawPosition();
+    }
+
+    /**
+     * Sets the power of the grabber motor to the input times the constant speed reduction
+     * @param power The power to set the motor to
+     */
+    public void setGrabberPower(double power) {
+        grabber.setGrabberPower(Constants.GRABBER_MOTOR_SPEED_REDUCTION*power);
+    }
+
+    /**
+     * Sets the power of the stack slapper motor
+     * @param power The power to set the motor to
+     */
+    public void setStackSlapperPower(double power) {
+        stackSlapper.setPower(power);
+    }
+
+    /**
+     * Gets the current speed of the stack slapper motor
+     * @return The stack slapper's current speed
+     */
+    public double getStackSlapperPower() {
+        return stackSlapper.getPower();
+    }
+
+    /**
+     * Checks if a ring is currently detected by  the stack slapper
+     * @return Whether a ring is detected or not
+     */
+    public boolean isRingDetected() {
+        return stackSlapper.isRingDetected();
     }
 
 }

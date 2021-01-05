@@ -12,7 +12,7 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        ChassisApi drive = new ChassisApi(hardwareMap, 1890, 3);
+        ChassisApi drive = new ChassisApi(hardwareMap);
         GrabberApi grabber = new GrabberApi(hardwareMap);
 
         double clawClosedPosition = 0.7;

@@ -5,41 +5,38 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.APIs.GrabberApi;
 import org.firstinspires.ftc.teamcode.APIs.ChassisApi;
+import org.firstinspires.ftc.teamcode.Constants.Constants;
 
-@TeleOp(name="Main Teleop V2.4.6")
+@TeleOp(name="Main Teleop V2.5")
 public class MainTeleop extends LinearOpMode {
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
-        ChassisApi drive = new ChassisApi(hardwareMap);
-        GrabberApi grabber = new GrabberApi(hardwareMap);
-
-        double clawClosedPosition = 0.7;
-        double clawOpenPosition = 0.15;
+        ChassisApi chassis = new ChassisApi(hardwareMap);
 
         boolean debugMode = true;
         boolean previousA = false;
 
-        grabber.setClawPosition(0.15);
-
         waitForStart();
+
+        chassis.closeClaw();
 
         while(opModeIsActive()) {
 
             // Drive based on joystick inputs
-            drive.driveCartesian(0.5*gamepad1.left_stick_x, 0.5*gamepad1.left_stick_y, 0.5*gamepad1.right_stick_x);
+            chassis.driveCartesian(0.5*gamepad1.left_stick_x, 0.5*gamepad1.left_stick_y, 0.5*gamepad1.right_stick_x);
 
             // Set the power of the grabber
-            grabber.setGrabberPower(0.1*(gamepad1.right_trigger-gamepad1.left_trigger));
+            chassis.setGrabberPower(0.1*(gamepad1.right_trigger-gamepad1.left_trigger));
 
             // Do some logic for A being pressed and toggling the position of the claw
             if(gamepad1.a && previousA == false) {
-                if(grabber.getClawPosition() < clawOpenPosition + 0.05 && grabber.getClawPosition() > clawOpenPosition-0.05) {
-                    grabber.setClawPosition(clawClosedPosition);
+                if(chassis.getClawPosition() < Constants.CLAW_OPEN_POSITION + Constants.CLAW_DEAD_ZONE && chassis.getClawPosition() > Constants.CLAW_OPEN_POSITION-Constants.CLAW_DEAD_ZONE) {
+                    chassis.closeClaw();
                     previousA = true;
                 } else {
-                    grabber.setClawPosition(clawOpenPosition);
+                    chassis.openClaw();
                     previousA = true;
                 }
             } else if(!gamepad1.a) {
@@ -47,11 +44,11 @@ public class MainTeleop extends LinearOpMode {
             }
 
             if(debugMode) {
-                telemetry.addLine(drive.getFrontLeftSpeed() + "(-----)" + drive.getFrontRightSpeed());
+                telemetry.addLine(chassis.getFrontLeftSpeed() + "(-----)" + chassis.getFrontRightSpeed());
                 telemetry.addLine("|       |");
                 telemetry.addLine("|       |");
                 telemetry.addLine("|       |");
-                telemetry.addLine(drive.getRearLeftSpeed() + "(-----)" + drive.getRearRightSpeed());
+                telemetry.addLine(chassis.getRearLeftSpeed() + "(-----)" + chassis.getRearRightSpeed());
                 telemetry.addLine("X: " + gamepad1.left_stick_x + " Y: " + gamepad1.left_stick_y + " ROT: " + gamepad1.right_stick_x);
             }
             telemetry.update();

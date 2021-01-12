@@ -13,7 +13,7 @@ public class StackSlapperApi {
 
     String stackSlapperMotorNameInHardwareMap = "stackSlapper";
 
-    double encoderTicksPerRotation = 28;
+    double encoderTicksPerRotation;
 
     /**
      * Instantiate a new stack slapper API object

@@ -15,7 +15,7 @@ public class BasicAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        ChassisApi drive = new ChassisApi(hardwareMap, 28, mecanumWheelDiameterInInches);
+        ChassisApi drive = new ChassisApi(hardwareMap);
 
         waitForStart();
 

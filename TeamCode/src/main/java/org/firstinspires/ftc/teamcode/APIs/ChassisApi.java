@@ -48,7 +48,7 @@ public class ChassisApi {
 
         // Instantiate our robot's other APIs
         gyro = new GyroscopeApi(hardwareMap);
-        stackSlapper = new StackSlapperApi(hardwareMap);
+        //stackSlapper = new StackSlapperApi(hardwareMap);
         grabber = new GrabberApi(hardwareMap);
     }
 

@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.APIs.GrabberApi;
 import org.firstinspires.ftc.teamcode.APIs.ChassisApi;
 import org.firstinspires.ftc.teamcode.Constants.Constants;
 
-@TeleOp(name="Main Teleop V2.5")
+@TeleOp(name="Main Teleop V2.5.4")
 public class MainTeleop extends LinearOpMode {
 
     @Override

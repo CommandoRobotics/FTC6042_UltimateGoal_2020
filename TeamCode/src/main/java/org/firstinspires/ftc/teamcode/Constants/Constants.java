@@ -15,7 +15,7 @@ public class Constants {
     public static final double CLAW_CLOSED_POSITION = 0.7;
     public static final double CLAW_OPEN_POSITION = 0.15;
     public static final double CLAW_DEAD_ZONE = 0.05;
-    public static final double GRABBER_MOTOR_SPEED_REDUCTION = 0.5;
+    public static final double GRABBER_MOTOR_SPEED_REDUCTION = 0.25;
 
     // Constants for the stack slapper
     public static final double STACK_SLAPPER_MOTOR_ENCODER_TICKS = 1120;

@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.APIs.GrabberApi;
 import org.firstinspires.ftc.teamcode.APIs.ChassisApi;
 import org.firstinspires.ftc.teamcode.Constants.Constants;
 
-@TeleOp(name="Main Teleop V2.5.4")
+@TeleOp(name="Main Teleop V2.5.6")
 public class MainTeleop extends LinearOpMode {
 
     @Override
@@ -30,7 +30,7 @@ public class MainTeleop extends LinearOpMode {
             chassis.driveCartesian(0.5*gamepad1.left_stick_x, 0.5*gamepad1.left_stick_y, 0.5*gamepad1.right_stick_x);
 
             // Set the power of the grabber
-            chassis.setGrabberPower(0.1*(gamepad1.right_trigger-gamepad1.left_trigger));
+            chassis.setGrabberPower(gamepad1.right_trigger-gamepad1.left_trigger);
 
             // Do some logic for A being pressed and toggling the position of the claw
             if(gamepad1.a && previousA == false) {

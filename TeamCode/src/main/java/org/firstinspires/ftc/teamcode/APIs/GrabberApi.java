@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class GrabberApi {
 
     DcMotor grabberMotor;
-    Servo clawMotor;
+    Servo clawServo;
 
-    String grabberMotorNameInHardwareMap = "grabberMotor";
-    String clawMotorNameInHardwareMap = "clawMotor";
+    String grabberMotorNameInHardwareMap = "grabber";
+    String clawServoNameInHardwareMap = "claw";
 
     boolean shouldCurrentProcessBeCancelled = false;
 
@@ -20,7 +20,7 @@ public class GrabberApi {
      */
     public GrabberApi(HardwareMap hardwareMap) {
         grabberMotor = hardwareMap.get(DcMotor.class, grabberMotorNameInHardwareMap);
-        clawMotor = hardwareMap.get(Servo.class, clawMotorNameInHardwareMap);
+        clawServo = hardwareMap.get(Servo.class, clawServoNameInHardwareMap);
         grabberMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
@@ -48,6 +48,7 @@ public class GrabberApi {
         grabberMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    //TODO fix this grabber code because we know this won't work, since it didn't with the drive train. We'll get stuck in a while loop.
     /**
      * Runs the grabber motor to the specified position using PID
      * @param positionInTicks The position to move to in ticks
@@ -72,7 +73,7 @@ public class GrabberApi {
      * @param positionInDegrees The position to set the claw to
      */
     public void setClawPosition(double positionInDegrees) {
-        clawMotor.setPosition(positionInDegrees);
+        clawServo.setPosition(positionInDegrees);
     }
 
     /**
@@ -80,7 +81,7 @@ public class GrabberApi {
      * @return The position of the claw
      */
     public double getClawPosition() {
-        return clawMotor.getPosition();
+        return clawServo.getPosition();
         //TODO add some logic to this API that allows for entering encoder ticks per rotation and returning rotations rather than total encoder ticks
     }
 

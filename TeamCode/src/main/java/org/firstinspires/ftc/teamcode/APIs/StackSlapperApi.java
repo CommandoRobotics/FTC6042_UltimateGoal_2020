@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.Constants.Constants;
+
 public class StackSlapperApi {
 
     DcMotor stackSlapperMotor;
@@ -11,7 +13,7 @@ public class StackSlapperApi {
 
     String stackSlapperMotorNameInHardwareMap = "stackSlapper";
 
-    double encoderTicksPerRotation = 28;
+    double encoderTicksPerRotation;
 
     /**
      * Instantiate a new stack slapper API object
@@ -20,17 +22,7 @@ public class StackSlapperApi {
     public StackSlapperApi(HardwareMap hardwareMap) {
         stackSlapperMotor = hardwareMap.get(DcMotor.class, stackSlapperMotorNameInHardwareMap);
         stackSlapperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    /**
-     * Instantiate a new stack slapper API object
-     * @param hardwareMap The robot's hardware map
-     * @param encoderTicksPerRotation The amount of encoder ticks per motor revolution
-     */
-    public StackSlapperApi(HardwareMap hardwareMap, double encoderTicksPerRotation) {
-        stackSlapperMotor = hardwareMap.get(DcMotor.class, stackSlapperMotorNameInHardwareMap);
-        stackSlapperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.encoderTicksPerRotation = encoderTicksPerRotation;
+        encoderTicksPerRotation = Constants.STACK_SLAPPER_MOTOR_ENCODER_TICKS;
     }
 
     /**
@@ -51,10 +43,10 @@ public class StackSlapperApi {
 
     /**
      * Gets the power of the stack slapper motor
-     * @param power The power of the stack slapper motor
+     * @return The current power of the stack slapper motor
      */
-    public void getPower(double power) {
-        stackSlapperMotor.getPower();
+    public double getPower() {
+        return stackSlapperMotor.getPower();
     }
 
     /**

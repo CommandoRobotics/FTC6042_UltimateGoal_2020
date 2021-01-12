@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.APIs.MecanumDriveApi;
+import org.firstinspires.ftc.teamcode.APIs.ChassisApi;
 
 public class BasicAutonomous extends LinearOpMode {
 
@@ -15,7 +15,7 @@ public class BasicAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        MecanumDriveApi drive = new MecanumDriveApi(hardwareMap, 28, mecanumWheelDiameterInInches);
+        ChassisApi drive = new ChassisApi(hardwareMap);
 
         waitForStart();
 

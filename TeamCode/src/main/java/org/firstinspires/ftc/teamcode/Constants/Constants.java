@@ -19,5 +19,6 @@ public class Constants {
 
     // Constants for the stack slapper
     public static final double STACK_SLAPPER_MOTOR_ENCODER_TICKS = 1120;
+    public static final double STACK_SLAPPER_SPEED_REDUCTION = 0.25;
 
 }

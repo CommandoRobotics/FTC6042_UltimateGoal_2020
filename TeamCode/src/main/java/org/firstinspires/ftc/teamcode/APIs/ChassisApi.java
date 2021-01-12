@@ -48,7 +48,7 @@ public class ChassisApi {
 
         // Instantiate our robot's other APIs
         gyro = new GyroscopeApi(hardwareMap);
-        //stackSlapper = new StackSlapperApi(hardwareMap);
+        stackSlapper = new StackSlapperApi(hardwareMap);
         grabber = new GrabberApi(hardwareMap);
     }
 
@@ -496,7 +496,7 @@ public class ChassisApi {
      * @param power The power to set the motor to
      */
     public void setStackSlapperPower(double power) {
-        stackSlapper.setPower(power);
+        stackSlapper.setPower(Constants.STACK_SLAPPER_SPEED_REDUCTION*power);
     }
 
     /**

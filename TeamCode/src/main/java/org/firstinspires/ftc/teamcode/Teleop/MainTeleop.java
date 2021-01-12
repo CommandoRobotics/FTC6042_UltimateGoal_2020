@@ -16,6 +16,8 @@ public class MainTeleop extends LinearOpMode {
         ChassisApi chassis = new ChassisApi(hardwareMap);
 
         boolean debugMode = true;
+
+        // Booleans for button pressed
         boolean previousA = false;
 
         waitForStart();

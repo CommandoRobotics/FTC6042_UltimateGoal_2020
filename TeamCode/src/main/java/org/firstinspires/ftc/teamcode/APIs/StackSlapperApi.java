@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.APIs;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -23,6 +24,7 @@ public class StackSlapperApi {
         stackSlapperMotor = hardwareMap.get(DcMotor.class, stackSlapperMotorNameInHardwareMap);
         stackSlapperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         encoderTicksPerRotation = Constants.STACK_SLAPPER_MOTOR_ENCODER_TICKS;
+        stackSlapperMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /**
@@ -58,10 +60,10 @@ public class StackSlapperApi {
     }
 
     /**
-     * Gets the current position of the stack slapper motor
+     * Gets the current rotation of the stack slapper's motor
      * @return The current position in rotations
      */
-    public double getCurrentPosition() {
+    public double getCurrentRotation() {
         return stackSlapperMotor.getCurrentPosition()/encoderTicksPerRotation;
     }
 

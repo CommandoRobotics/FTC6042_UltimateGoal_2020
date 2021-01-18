@@ -8,7 +8,8 @@ public class Constants {
     public static final String REAR_LEFT_MOTOR_NAME_IN_HARDWARE_MAP = "rearLeft";
     public static final String REAR_RIGHT_MOTOR_NAME_IN_HARDWARE_MAP = "rearRight";
 
-    public static final double ENCODER_TICKS_PER_DRIVE_WHEEL_REVOLUTION = 1890;
+    public static final double ENCODER_TICKS_PER_DRIVE_WHEEL_REVOLUTION = 815;
+
     public static final double DRIVE_WHEEL_DIAMETER_IN_INCHES = 2.952756;
 
     // Constants for the grabber

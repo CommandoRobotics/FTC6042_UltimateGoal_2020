@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants.Constants;
+import org.firstinspires.ftc.teamcode.Constants.PidConstants;
 
 public class ChassisApi {
 
@@ -163,7 +164,7 @@ public class ChassisApi {
 
         targetPosition = inchesToTicks(distanceToTravelInInches);
 
-        double power = pid.getOutput(0, targetPosition);
+        double power = pid.getOutput(0, targetPosition)* PidConstants.DRIVE_FORWARD_OUTPUT_REDUCTION;
 
         driveForward(standardizeMotorPower(power));
 
@@ -185,7 +186,7 @@ public class ChassisApi {
 
         PidApi pid = new PidApi(actionP, actionI, actionD);
 
-        double power = pid.getOutput(currentPosition, targetPosition);
+        double power = pid.getOutput(currentPosition, targetPosition)*PidConstants.DRIVE_FORWARD_OUTPUT_REDUCTION;
 
         driveForward(standardizeMotorPower(power));
 

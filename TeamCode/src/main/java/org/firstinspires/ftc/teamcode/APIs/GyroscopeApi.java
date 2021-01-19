@@ -67,26 +67,32 @@ public class GyroscopeApi {
     }
 
     public float getRawX() {
+        update();
         return xAngle;
     }
 
     public float getRawY() {
+        update();
         return yAngle;
     }
 
     public float getRawZ() {
+        update();
         return zAngle;
     }
 
     public float getStandardizedX() {
+        update();
         return xAngle%360;
     }
 
     public float getStandardizedY() {
-        return  yAngle%360;
+        update();
+        return yAngle%360;
     }
 
     public float getStandardizedZ() {
+        update();
         return xAngle%360;
     }
 }

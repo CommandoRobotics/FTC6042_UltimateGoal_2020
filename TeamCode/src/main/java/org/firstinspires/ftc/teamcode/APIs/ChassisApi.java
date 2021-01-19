@@ -193,6 +193,71 @@ public class ChassisApi {
     }
 
     /**
+     * Rotate the robot
+     * @param speed The speed to rotate. Positive numbers rotate clockwise and negative numbers rotate counterclockwise
+     */
+    public void rotate(double speed) {
+
+        speed = standardizeMotorPower(speed);
+
+        frontLeft.setPower(speed);
+        rearLeft.setPower(speed);
+        frontRight.setPower(-speed);
+        rearRight.setPower(-speed);
+
+    }
+
+    /**
+     * Begin rotating with PID
+     * @param degreesToRotate The number of degrees to rotate. Positive numbers rotate right, negative numbers rotate left.
+     * @param p The P value
+     * @param i The I value
+     * @param d The D value
+     */
+    public void startRotatePid(double degreesToRotate, double p, double i, double d) {
+
+        isActionRunning = true;
+
+        clearActionPids();
+
+        PidApi pid = new PidApi(p, i, d);
+
+        actionP = p;
+        actionI = i;
+        actionD = d;
+
+        resetEncoders();
+
+        double currentPosition = getRawHeading();
+
+        targetPosition = currentPosition+degreesToRotate;
+
+        double power = pid.getOutput(currentPosition, targetPosition)*PidConstants.ROTATE_OUTPUT_REDUCTION;
+
+        rotate(power);
+
+    }
+
+    public void updatePositionRotate() {
+
+        double currentPosition = getRawHeading();
+
+        // Stop our action when we arrive at our position
+        if(currentPosition == targetPosition) {
+            isActionRunning = false;
+            rotate(0);
+            return;
+        }
+
+        PidApi pid = new PidApi(actionP, actionI, actionD);
+
+        double power = pid.getOutput(currentPosition, targetPosition)*PidConstants.ROTATE_OUTPUT_REDUCTION;
+
+        rotate(power);
+
+    }
+
+    /**
      * Get whether there is an action running
      * @return Whether there is an action running
      */
@@ -441,8 +506,7 @@ public class ChassisApi {
      * @return The robots current heading
      */
     public double getHeading() {
-        //TODO change this to the proper gyro axis
-        return gyro.getStandardizedX();
+        return gyro.getStandardizedY();
     }
 
     /**
@@ -450,8 +514,7 @@ public class ChassisApi {
      * @return The robots current heading
      */
     public double getRawHeading() {
-        //TODO change this to the proper gyro axis
-        return gyro.getRawX();
+        return gyro.getRawY();
     }
 
     /**

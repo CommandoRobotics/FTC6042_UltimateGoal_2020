@@ -171,6 +171,32 @@ public class ChassisApi {
     }
 
     /**
+     * Start driving forward with PID using the PID values found in PidConstants.java
+     * @param distanceToTravelInInches The distance to travel in inches
+     */
+    public void startDriveForwardPid(double distanceToTravelInInches) {
+
+        isActionRunning = true;
+
+        clearActionPids();
+
+        actionP = PidConstants.DRIVE_FORWARD_P;
+        actionI = PidConstants.DRIVE_FORWARD_I;
+        actionD = PidConstants.DRIVE_FORWARD_D;
+
+        PidApi pid = new PidApi(actionP, actionI,  actionD);
+
+        resetEncoders();
+
+        targetPosition = inchesToTicks(distanceToTravelInInches);
+
+        double power = pid.getOutput(0, targetPosition)* PidConstants.DRIVE_FORWARD_OUTPUT_REDUCTION;
+
+        driveForward(standardizeMotorPower(power));
+
+    }
+
+    /**
      * Update the current position of the robot for driving forward
      */
     public void updatePositionDriveForward() {
@@ -178,7 +204,7 @@ public class ChassisApi {
         double currentPosition = (frontLeft.getCurrentPosition() + frontRight.getCurrentPosition() + rearLeft.getCurrentPosition() + rearRight.getCurrentPosition())/4;
 
         // Stop our action when we arrive at our position
-        if(currentPosition == targetPosition) {
+        if(currentPosition <= targetPosition+PidConstants.DRIVE_FORWARD_DEAD_ZONE && currentPosition >= targetPosition-PidConstants.DRIVE_FORWARD_DEAD_ZONE) {
             isActionRunning = false;
             driveForward(0);
             return;

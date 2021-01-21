@@ -322,13 +322,14 @@ public class ChassisApi {
 
         double averageDistanceTraveled = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
         double distanceToTravelInTicks = inchesToTicks(distanceToTravelInInches);
+        targetPosition = distanceToTravelInTicks;
 
         // If we're moving to the left, the distance traveled needs to be a negative number
         if(!areWeTravelingRight) {
             averageDistanceTraveled = -averageDistanceTraveled;
         }
 
-        double power = pid.getOutput(averageDistanceTraveled, distanceToTravelInTicks);
+        double power = pid.getOutput(averageDistanceTraveled, distanceToTravelInTicks)*PidConstants.STRAFE_OUTPUT_REDUCTION;
 
         strafe(standardizeMotorPower(power));
 
@@ -350,7 +351,7 @@ public class ChassisApi {
 
         PidApi pid = new PidApi(actionP, actionI, actionD);
 
-        double power = pid.getOutput(currentPosition, targetPosition);
+        double power = pid.getOutput(currentPosition, targetPosition)*PidConstants.STRAFE_OUTPUT_REDUCTION;
 
         strafe(standardizeMotorPower(power));
 

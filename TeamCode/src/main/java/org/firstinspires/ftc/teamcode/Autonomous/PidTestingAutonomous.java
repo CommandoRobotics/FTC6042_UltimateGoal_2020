@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.APIs.ChassisApi;
 
-@Autonomous(name="PID Testing V1.2.7.1")
+@Autonomous(name="PID Testing V2.0.1")
 public class PidTestingAutonomous extends LinearOpMode {
 
     @Override
@@ -15,10 +15,10 @@ public class PidTestingAutonomous extends LinearOpMode {
 
         waitForStart();
 
-        chassis.startDriveForwardPid(21, 0.05, 1, 0.1);
+        chassis.startStrafePid(12, 0.1, 0, 0);
 
         while(chassis.isActionRunning() && opModeIsActive()) {
-            chassis.updatePositionDriveForward();
+            chassis.updatePositionStrafe();
         }
 
     }

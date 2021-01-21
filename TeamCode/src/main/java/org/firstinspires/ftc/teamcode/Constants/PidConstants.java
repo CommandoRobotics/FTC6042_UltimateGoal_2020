@@ -8,4 +8,6 @@ public class PidConstants {
     public static final double DRIVE_FORWARD_OUTPUT_REDUCTION = 0.01;
     public static final double DRIVE_FORWARD_DEAD_ZONE = 5;
 
+    public static final double STRAFE_OUTPUT_REDUCTION = 0.01;
+
 }

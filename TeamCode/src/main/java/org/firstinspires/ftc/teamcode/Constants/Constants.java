@@ -13,7 +13,7 @@ public class Constants {
     public static final double DRIVE_WHEEL_DIAMETER_IN_INCHES = 2.952756;
 
     // Constants for the grabber
-    public static final double CLAW_CLOSED_POSITION = 0.7;
+    public static final double CLAW_CLOSED_POSITION = 0.8;
     public static final double CLAW_OPEN_POSITION = 0.15;
     public static final double CLAW_DEAD_ZONE = 0.05;
     public static final double GRABBER_MOTOR_SPEED_REDUCTION = 0.25;

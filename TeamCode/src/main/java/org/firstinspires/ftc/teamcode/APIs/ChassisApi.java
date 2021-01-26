@@ -111,6 +111,18 @@ public class ChassisApi {
     }
 
     /**
+     * Drive tank
+     * @param leftPower The power to set the left side of the robot to
+     * @param rightPower The power to set the right side of the robot to
+     */
+    public void driveTank(double leftPower, double rightPower) {
+        frontLeft.setPower(leftPower);
+        frontRight.setPower(rightPower);
+        rearLeft.setPower(leftPower);
+        rearRight.setPower(rightPower);
+    }
+
+    /**
      * Drives forward the specified distance using PID
      * @param distanceToTravelInInches The distance to travel in inches
      * @param p The P value

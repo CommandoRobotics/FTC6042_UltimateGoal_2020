@@ -86,6 +86,14 @@ public class GrabberApi {
     }
 
     /**
+     * Gets the position of the grabber
+     * @return The position of the grabber in ticks
+     */
+    public double getGrabberPosition() {
+        return grabberMotor.getCurrentPosition();
+    }
+
+    /**
      * Cancels the process that's currently running on the grabber motor
      */
     public void cancelGrabberMotorCurrentProcess() {

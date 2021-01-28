@@ -542,4 +542,52 @@ public class ChassisApi {
         return stackSlapper.isRingDetected();
     }
 
+    /**
+     * Get the front left motor
+     * @return The front left motor object
+     */
+    public DcMotor getFrontLeftMotor() {
+        return frontLeft;
+    }
+
+    /**
+     * Get the front right motor
+     * @return The rear right motor object
+     */
+    public DcMotor getFrontRightMotor() {
+        return frontRight;
+    }
+
+    /**
+     * Get the rear left motor
+     * @return The rear left motor object
+     */
+    public DcMotor getRearLeftMotor() {
+        return rearLeft;
+    }
+
+    /**
+     * Get the rear right motor
+     * @return The rear right motor object
+     */
+    public DcMotor getRearRightMotor() {
+        return rearRight;
+    }
+
+    /**
+     * Get the stack slapper's current position
+     * @return The stack slapper's position in ticks
+     */
+    public double getStackSlapperPosition() {
+        return stackSlapper.getCurrentPosition();
+    }
+
+    /**
+     * Gets the grabber's current position
+     * @return The grabber's position in ticks
+     */
+    public double getGrabberPosition() {
+        return grabber.getGrabberPosition();
+    }
+
 }

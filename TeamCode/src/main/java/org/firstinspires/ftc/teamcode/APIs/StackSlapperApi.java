@@ -65,4 +65,20 @@ public class StackSlapperApi {
         return stackSlapperMotor.getCurrentPosition()/encoderTicksPerRotation;
     }
 
+    public boolean isSensor1Pressed() {
+        return sensor1.isPressed();
+    }
+
+    public boolean isSensor2Pressed() {
+        return sensor2.isPressed();
+    }
+
+    public boolean isSensor3Pressed() {
+        return sensor3.isPressed();
+    }
+
+    public boolean isSensor4Pressed() {
+        return sensor4.isPressed();
+    }
+
 }

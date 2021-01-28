@@ -23,7 +23,10 @@ public class ChassisApi {
     // Variables used for autonomous actions
     double targetPosition;
     boolean isActionRunning = false;
-    double actionP = 0, actionI = 0, actionD = 0;
+    double actionP = 0, actionI = 0, actionD = 0, gyroDegree = 0;
+    double gyroP = PidConstants.STRAFE_GYRO_P;
+    double gyroI = PidConstants.STRAFE_GYRO_I;
+    double gyroD = PidConstants.STRAFE_GYRO_D;
 
     /**
      * This creates a new Mecanum API object which can be used to calculate values or drive the robot
@@ -141,7 +144,7 @@ public class ChassisApi {
 
         while(averageDistanceTraveledInTicks != distanceToTravelInInches) {
 
-            averageDistanceTraveledInTicks = (frontLeft.getCurrentPosition()+frontRight.getCurrentPosition()+rearLeft.getCurrentPosition()+rearRight.getCurrentPosition())/4;
+            averageDistanceTraveledInTicks = (frontLeft.getCurrentPosition()+frontRight.getCurrentPosition()+rearLeft.getCurrentPosition()+rearRight.getCurrentPosition())/4.0;
 
             double power = pid.getOutput(averageDistanceTraveledInTicks, distanceToTravelInTicks);
 
@@ -213,7 +216,7 @@ public class ChassisApi {
      */
     public void updatePositionDriveForward() {
 
-        double currentPosition = (frontLeft.getCurrentPosition() + frontRight.getCurrentPosition() + rearLeft.getCurrentPosition() + rearRight.getCurrentPosition())/4;
+        double currentPosition = (frontLeft.getCurrentPosition() + frontRight.getCurrentPosition() + rearLeft.getCurrentPosition() + rearRight.getCurrentPosition())/4.0;
 
         // Stop our action when we arrive at our position
         if(currentPosition <= targetPosition+PidConstants.DRIVE_FORWARD_DEAD_ZONE && currentPosition >= targetPosition-PidConstants.DRIVE_FORWARD_DEAD_ZONE) {
@@ -286,7 +289,7 @@ public class ChassisApi {
 
         while(averageDistanceTraveled != distanceToTravelInInches) {
 
-            averageDistanceTraveled = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
+            averageDistanceTraveled = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4.0;
             double distanceToTravelInTicks = inchesToTicks(distanceToTravelInInches);
 
             // If we're moving left so the distance traveled needs to be a negative number
@@ -322,6 +325,8 @@ public class ChassisApi {
         actionI = i;
         actionD = d;
 
+        gyroDegree = gyro.getRawY();
+
         resetEncoders();
 
         boolean areWeTravelingRight = true;
@@ -332,7 +337,7 @@ public class ChassisApi {
             areWeTravelingRight = false;
         }
 
-        double averageDistanceTraveled = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
+        double averageDistanceTraveled = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4.0;
         double distanceToTravelInTicks = inchesToTicks(distanceToTravelInInches);
         targetPosition = distanceToTravelInTicks;
 
@@ -352,7 +357,7 @@ public class ChassisApi {
      */
     public void updatePositionStrafe() {
 
-        double currentPosition = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4;
+        double currentPosition = (Math.abs(frontLeft.getCurrentPosition())+Math.abs(frontRight.getCurrentPosition())+Math.abs(rearLeft.getCurrentPosition())+Math.abs(rearRight.getCurrentPosition()))/4.0;
 
         // Stop our action when we arrive at our position
         if(currentPosition == targetPosition) {
@@ -365,7 +370,32 @@ public class ChassisApi {
 
         double power = pid.getOutput(currentPosition, targetPosition)*PidConstants.STRAFE_OUTPUT_REDUCTION;
 
-        strafe(standardizeMotorPower(power));
+        double currentGyro = gyro.getRawY();
+
+        power = standardizeMotorPower(power);
+        power *= 0.5;
+
+        if(currentGyro > gyroDegree+3) {
+
+            frontLeft.setPower(power);
+            frontRight.setPower(-power);
+            rearLeft.setPower(-power-0.1);
+            rearRight.setPower(power+0.1);
+
+
+        } else if(currentGyro < gyroDegree-3) {
+            frontLeft.setPower(power);
+            frontRight.setPower(-power);
+            rearLeft.setPower(-power+0.1);
+            rearRight.setPower(power-0.1);
+        } else {
+            frontLeft.setPower(power);
+            frontRight.setPower(-power);
+            rearLeft.setPower(-power);
+            rearRight.setPower(power);
+        }
+
+        //strafe(standardizeMotorPower(power));
 
     }
 
@@ -480,7 +510,6 @@ public class ChassisApi {
      * @return The robots current heading
      */
     public double getHeading() {
-        //TODO change this to the proper gyro axis
         return gyro.getStandardizedX();
     }
 
@@ -489,7 +518,6 @@ public class ChassisApi {
      * @return The robots current heading
      */
     public double getRawHeading() {
-        //TODO change this to the proper gyro axis
         return gyro.getRawX();
     }
 
